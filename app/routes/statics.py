@@ -3,9 +3,14 @@ from app.database import urls_collection
 
 router = APIRouter()
 
-
 @router.get("/urls-data")
 def statics_about_urls():
+    """
+    Retrieve statistics about all shortened URLs.
+
+    Returns:
+        list: A list of dictionaries containing the short URL, number of clicks, and the long URL.
+    """
     all_urls = urls_collection.find({})
 
     all_urls_data = []
