@@ -1,5 +1,6 @@
 from datetime import datetime
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import RedirectResponse
 import httpx
 import shortuuid
 from app.database import urls_collection
@@ -23,7 +24,7 @@ def shorten_url(inData : URLSchema) :
     existing_url = urls_collection.find_one({"long_url" : long_url})
 
     if existing_url :
-        return {"short_url" : existing_url["_id"], "is_exist" : True}
+        return {"short_url" : existing_url["_id"], "total_clicks" : existing_url['clicks']}
     
 
     if not is_url_reachable(long_url) :
@@ -38,7 +39,7 @@ def shorten_url(inData : URLSchema) :
         "clicks" : 0
     })
 
-    return {"short_url" : short_code, "is_exist" : False}
+    return {"short_url" : short_code, "total_clicks" : 0}
 
 
 
@@ -53,5 +54,5 @@ def redirect(short_code : str):
         {"_id": short_code}, 
         {"$inc": {"clicks": 1}}
     )
-    return {"long_url": url_data["long_url"]}
+    return RedirectResponse(url=url_data["long_url"]) 
 
