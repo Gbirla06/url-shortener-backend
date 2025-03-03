@@ -1,0 +1,1 @@
+uvicorn app.main:app --reload --reload-dir app --port 8001 --env-file local.env
