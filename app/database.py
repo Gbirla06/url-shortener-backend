@@ -1,14 +1,12 @@
+from motor.motor_asyncio import AsyncIOMotorClient
 import os
-from pymongo import MongoClient
+from dotenv import load_dotenv
 
-# Retrieve the MongoDB URI from environment variables
-MONGO_URL = os.getenv('MONGO_URI')
+load_dotenv()
 
-# Initialize the MongoDB client with the retrieved URI
-client = MongoClient(MONGO_URL, tls=True)
+MONGO_URI = os.getenv("MONGO_URI")
+DB_NAME = "url_shortener"
 
-# Access the 'url_shortener' database
-db = client.url_shortener
-
-# Access the 'urls' collection within the 'url_shortener' database
-urls_collection = db.urls
+client = AsyncIOMotorClient(MONGO_URI)  # Async MongoDB connection
+database = client[DB_NAME]
+urls_collection = database["urls"]

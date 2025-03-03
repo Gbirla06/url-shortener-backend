@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.database import db
+from app.database import database
 from app.routes.shorturl import router as url_router
 from app.routes.statics import router as statics_router
 
@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 @app.get("/")
-def home():
+async def home():
     """
     Home endpoint to check if the service is running.
 
@@ -27,7 +27,7 @@ def home():
     return {"Message" : "URL Shortener Service"}
 
 @app.get("/db-health")
-def db_health():
+async def db_health():
     """
     Endpoint to check the health of the MongoDB connection.
 
@@ -35,7 +35,7 @@ def db_health():
         dict: A status message indicating whether MongoDB is connected or not.
     """
     try:
-        db.command("ping")
+        await database.command("ping")
         return {"status": "connected", "message": "MongoDB is connected!"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
